@@ -1,24 +1,28 @@
+import bodyParser from "body-parser";
 import * as dotenv from "dotenv";
 dotenv.config()
 
-
 import express from 'express'
-import wayService from './services/wayService' 
+import session from 'express-session';
+
+import routes from './routes'
 
 const app = express()
+
 const port = 3000
 
-console.log(process.env.DB_SERVER)
+app.use(bodyParser.json())
 
-app.get('/', (req, res) => {
-  res.send('Hello world!');
-})
+app.use(session({
+  secret: process.env.session_secret,
+  saveUnitialized: false,
+  resave: false,
+  cookie: {
+      maxAge: 1000 * 60 * 30
+  }
+}))
 
-app.get('/api/ways', async (req, res) => {
-  const result = await wayService.getAllUsers()
-  console.log(result[0])
-  res.json(result[0])
-})
+app.use('/', routes)
 
 app.listen(port, () => {
   return console.log(`server is listening on ${port}`);
