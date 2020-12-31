@@ -50,3 +50,17 @@ export interface odcinek {
     Punktacja : number,
     PunktacjaOdKonca : number
 }
+
+export interface odcinekHR {
+    ID : number,
+    Nazwa : string,
+    PunktPoczatkowy : number,
+    PPNazwa : string,
+    PunktKoncowy : number,
+    PKNazwa : string,
+    Teren : number,
+    TerenNazwa : string,
+    Dlugos : number,
+    Punktacja : number,
+    PunktacjaOdKonca : number
+}
