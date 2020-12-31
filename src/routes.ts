@@ -28,8 +28,8 @@ router.get('/api/area/:id/points', (req, res) => pointsService.getAllPointsInAre
 
 router.post('/api/segment/add', (req, res) => segmentService.addNewSegment(req, res))
 router.post('/api/segments/search', (req, res) => segmentService.segmentSearch(req, res))
-router.post('/api/segments/:id', (req, res) => segmentService.segmentEdit(req, res))
-router.delete('/api/segments/:id', (req, res) => segmentService.segmentDelete(req, res))
+router.post('/api/segment/:id', (req, res) => segmentService.segmentEdit(req, res))
+router.delete('/api/segment/:id', (req, res) => segmentService.segmentDelete(req, res))
 
 router.get('/api/loginUser', (req, res) => userService.logUserIn(req, res))
 router.get('/api/loginEmployee', (req, res) => userService.logEmployeeIn(req, res))
