@@ -50,7 +50,7 @@ class pointsService{
         const name : string = req.body.name
 
         try {
-            const query = await pool.promise().query(`SELECT * FROM Punkt WHERE Nazwa LIKE('${name}')`)
+            const query = await pool.promise().query(`SELECT * FROM Punkt WHERE Nazwa LIKE('%${name}%')`)
             const result : Array<punkt> = JSON.parse(JSON.stringify(query[0]))
             res.json(result)
         }
@@ -62,10 +62,10 @@ class pointsService{
     async addNewPoint(req, res){
         const name : string = req.body.name
         const npm : number = req.body.npm
-        //TODO Potrzebuje const employee : number = req.body.employee
+        const employeeID : number = req.session.userID
 
         try {
-            const query = await pool.promise().query(`INSERT INTO Punkt VALUES(NULL, '${name})', 1, ${npm}`)//TODO podmien 1 z ${employee}
+            const query = await pool.promise().query(`INSERT INTO Punkt VALUES(NULL, '${name}', ${employeeID}, ${npm})`)
             res.json({success : true, message : "New point succesfully add"})
         }
         catch(err) {

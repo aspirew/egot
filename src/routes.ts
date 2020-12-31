@@ -22,6 +22,10 @@ router.get('/api/rank/:id', (req, res) => badgeService.getRankById(req, res))
 
 router.get('/api/points', (req, res) => pointsService.getAllPoints(req, res))
 router.get('/api/point/:id/bounds', (req, res) => pointsService.getBoundPoints(req, res))
+router.post('/api/points/search', (req, res) => pointsService.pointSearch(req, res))
+router.post('/api/point', (req, res) => pointsService.addNewPoint(req, res))
+router.post('/api/point/:id', (req, res) => pointsService.pointEdit(req, res))
+router.delete('/api/point/:id', (req, res) => pointsService.pointDelete(req, res))
 
 router.get('/api/areas', (req, res) => areaService.getAllAreas(req, res))
 router.get('/api/area/:id/points', (req, res) => pointsService.getAllPointsInArea(req, res))
