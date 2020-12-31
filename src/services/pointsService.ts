@@ -9,8 +9,8 @@ class pointsService{
             const result : Array<punkt> = JSON.parse(JSON.stringify(query[0]))
             res.json(result)
         }
-        catch {
-            res.json({message : "err connecting to db"})
+        catch(err) {
+            res.json({message : err.sqlMessage})
         }
 
     }
@@ -26,7 +26,6 @@ class pointsService{
             res.json(result)
         }
         catch(err) {
-            console.log(err)
             res.json({message : err.sqlMessage })
         }
 
@@ -42,8 +41,8 @@ class pointsService{
             const result : Array<punkt> = JSON.parse(JSON.stringify(query[0]))
             res.json(result)
         }
-        catch {
-            res.json({message : "err connecting to db"})
+        catch(err) {
+            res.json({message : err.sqlMessage })
         }
 
     }
