@@ -46,6 +46,56 @@ class pointsService{
         }
 
     }
+    async pointSearch(req, res){
+        const name : string = req.body.name
+
+        try {
+            const query = await pool.promise().query(`SELECT * FROM Punkt WHERE Nazwa LIKE('${name}')`)
+            const result : Array<punkt> = JSON.parse(JSON.stringify(query[0]))
+            res.json(result)
+        }
+        catch(err){
+            res.json({message : err.sqlMessage })
+        }
+    }
+
+    async addNewPoint(req, res){
+        const name : string = req.body.name
+        const npm : number = req.body.npm
+        //TODO Potrzebuje const employee : number = req.body.employee
+
+        try {
+            const query = await pool.promise().query(`INSERT INTO Punkt VALUES(NULL, '${name})', 1, ${npm}`)//TODO podmien 1 z ${employee}
+            res.json({success : true, message : "New point succesfully add"})
+        }
+        catch(err) {
+            res.json({success : false, message : err.sqlMessage})
+        }
+
+    }
+    
+    async pointEdit(req, res){
+        const ID : number = req.params.id
+        const point : punkt = req.body.newPointData
+        try {
+            const query = await pool.promise().query(`UPDATE Punkt SET Nazwa = '${point.Nazwa}', Wysokosc_npm = ${point.Wysokosc_npm} WHERE ID=${ID}`)
+            res.json({success : true, message : "point succesfully eddited"})
+        }
+        catch(err) {
+            res.json({success : false, message : err.sqlMessage})
+        }
+
+    }
+    async pointDelete(req, res){
+        const ID : number = req.params.id
+        try {
+            const query = await pool.promise().query(`DELETE FROM Punkt WHERE ID=${ID}`)
+            res.json({success : true, message : "point succesfully deleted"})
+        }
+        catch(err) {
+            res.json({success : false, message : err.sqlMessage})
+        }
+    }
 }
 
 export default new pointsService

@@ -15,7 +15,7 @@ class segmentService{
             res.json({success : true, message : "New segment succesfully add"})
         }
         catch(err) {
-            res.json({success : true, message : err.sqlMessage})
+            res.json({success : false, message : err.sqlMessage})
         }
 
     }
@@ -45,7 +45,7 @@ class segmentService{
             }
         }
         catch(err) {
-            res.json({success : true, message : err.sqlMessage})
+            res.json({success : false, message : err.sqlMessage})
         }
 
     }
@@ -55,22 +55,30 @@ class segmentService{
         const newSegment : odcinek = req.body
         console.log(segmentID)
         console.log(newSegment)
-        var i = `UPDATE Odcinek SET Nazwa = ${newSegment.Nazwa}, 
+        try {
+            const query = await pool.promise().query (`UPDATE Odcinek SET Nazwa = '${newSegment.Nazwa}', 
                     Punktacja=${newSegment.Punktacja}, 
                     PunktacjaOdKonca=${newSegment.PunktacjaOdKonca===0?"NULL":newSegment.PunktacjaOdKonca} 
-                WHERE ID=${segmentID};`
-        console.log(i)
-        //TODO : edit segment - editable data: nazwa and punkty w tę i z powrotem
-
-        res.json({success : true, message : "Segment succesfully edited"})
+                    WHERE ID=${segmentID};`)
+            res.json({success : true, message : "Segment succesfully eddited"})
+            
+        }
+        catch(err){
+            res.json({success : false, message : err.sqlMessage})
+        }
     }
 
 
     async segmentDelete(req, res){
         const segmentID : number = req.params.id
         console.log(segmentID)
-        
-        res.json({success : true, message : "Segment succesfully deleted"})
+        try {
+            const query = await pool.promise().query(`DELETE FROM Odcinek WHERE ID = ${segmentID}`)
+            res.json({success : true, message : "Segment succesfully deleted"})
+        }
+        catch(err){
+            res.json({success : false, message : err.sqlMessage})
+        }
     }
 }
 
