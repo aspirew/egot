@@ -5,7 +5,7 @@ class pointsService{
     async getAllAreas(req, res) {
 
         try{
-            const query = await pool.promise().query("SELECT * FROM `teren`")
+            const query = await pool.promise().query("SELECT * FROM `Teren`")
             const result : Array<teren> = JSON.parse(JSON.stringify(query[0]))
             res.json(result)
         }

@@ -5,7 +5,7 @@ class pointsService{
     async getAllPoints(req, res) {
 
         try{
-            const query = await pool.promise().query("SELECT * FROM `punkt`")
+            const query = await pool.promise().query("SELECT * FROM `Punkt`")
             const result : Array<punkt> = JSON.parse(JSON.stringify(query[0]))
             res.json(result)
         }
@@ -37,7 +37,7 @@ class pointsService{
 
         try{
             const query = await pool.promise().query(`SELECT Punkt.Nazwa FROM Odcinek 
-            JOIN punkt ON punkt.ID = odcinek.PunktKoncowy WHERE punktPoczatkowy = ${pointID}`)
+            JOIN punkt ON Punkt.ID = odcinek.PunktKoncowy WHERE PunktPoczatkowy = ${pointID}`)
             const result : Array<punkt> = JSON.parse(JSON.stringify(query[0]))
             res.json(result)
         }

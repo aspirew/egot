@@ -5,8 +5,8 @@ class badgeService{
     async getOngoingBadge(req, res) {
         const user = req.session.login
         if(user){
-            const query = await pool.promise().query(`SELECT * FROM odznaka JOIN turysta ON odznaka.turysta = turysta.ID 
-            WHERE turysta.Login = '${user}' AND odznaka.Zdobyta = false`)
+            const query = await pool.promise().query(`SELECT * FROM Odznaka JOIN Turysta ON Odznaka.Turysta = Turysta.ID 
+            WHERE Turysta.Login = '${user}' AND Odznaka.Zdobyta = false`)
             if(query[0]){
                 const result : odznaka = JSON.parse(JSON.stringify(query[0]))
                 res.json(result)
@@ -23,8 +23,8 @@ class badgeService{
     async getCompletedBadges(req, res) {
         const user = req.session.login
         if(user){
-            const query = await pool.promise().query(`SELECT * FROM odznaka JOIN turysta ON turysta.ID = Turysta 
-            WHERE turysta.Login = '${user}' AND odznaka.Zdobyta = true`) 
+            const query = await pool.promise().query(`SELECT * FROM Odznaka JOIN Turysta ON Turysta.ID = Turysta 
+            WHERE Turysta.Login = '${user}' AND Odznaka.Zdobyta = true`) 
             if(query[0]){
                 const result : Array<odznaka> = JSON.parse(JSON.stringify(query[0]))
                 res.json(result)
@@ -42,10 +42,10 @@ class badgeService{
         const type = req.params.type
         const user = req.session.login
         if(user){
-            const query = await pool.promise().query(`SELECT * FROM odznaka 
-            JOIN turysta ON turysta.ID = odznaka.Turysta
-            JOIN stopien ON stopien.ID = odznaka.Stopien
-            WHERE turysta.Login = '${user}' AND stopien.Nazwa = '${type}'`) 
+            const query = await pool.promise().query(`SELECT * FROM Odznaka 
+            JOIN Turysta ON Turysta.ID = Odznaka.Turysta
+            JOIN Stopien ON Stopien.ID = Odznaka.Stopien
+            WHERE Turysta.Login = '${user}' AND Stopien.Nazwa = '${type}'`) 
             if(query[0]){
                 const result : odznaka = JSON.parse(JSON.stringify(query[0]))
                 res.json(result)

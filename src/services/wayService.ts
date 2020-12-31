@@ -5,7 +5,7 @@ class wayService{
     async getAllWays(req, res) {
 
         try{
-            const query = await pool.promise().query("SELECT * FROM `przejscie`")
+            const query = await pool.promise().query("SELECT * FROM `Przejscie`")
             const result : Array<przejscie> = JSON.parse(JSON.stringify(query[0]))
             res.json(result)
         }
