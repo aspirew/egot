@@ -71,3 +71,7 @@ export interface badgeWays {
     Nadmiar : number,
     Przyznane : number
 }
+export interface simplePrzejscieOdcinka {
+    Odcinek : number
+    Od_konca : boolean
+}

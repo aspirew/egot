@@ -1,5 +1,5 @@
 import { pool } from '../dbconn'
-import { odcinekHR, przejscie } from '../interfaces'
+import { odcinekHR, przejscie, simplePrzejscieOdcinka } from '../interfaces'
 
 class routesService{
     async getAllRoutes(req, res) {
@@ -17,12 +17,28 @@ class routesService{
 
     async saveRoute(req, res) {
         const userID = req.session.userID
-        const segmentsInRoute : Array<odcinekHR> = req.body.route
+        const segmentsInRoute : Array<simplePrzejscieOdcinka> = req.body.route
+        const routeName : string = req.body.routeName
+        const initialPoint : number = req.body.initialPoint
         console.log(segmentsInRoute)
 
         try {
-            const query = null
-            res.json({success : true, message : "Segment succesfully eddited"})
+            const query = await pool.promise().query(`INSERT INTO Przejscie VALUE (NULL, '${routeName}', ${initialPoint},(SELECT ID FROM Odznaka WHERE Turysta = ${userID} AND Odznaka.Zdobyta = false), ${userID}, false, NULL, NULL, NULL);`)
+            const idQuery = await pool.promise().query(`SELECT ID FROM Przejscie WHERE TurystaPlanujacy = ${userID} AND Nazwa = '${routeName}';`)
+            const routeId : number = JSON.parse(JSON.stringify(query[0])).insertId
+            var values = []
+            segmentsInRoute.forEach(e => {
+                values.push(`(NULL, ${e.Odcinek}, NULL, ${routeId}, false, ${e.Od_konca}, NULL)`)
+            })
+            var valuesJoined = values.join(',\n')
+            const query2 = await pool.promise().query(`INSERT INTO Przejscie_Odcinka VALUES\n${valuesJoined};`);
+            console.log("-------------------YEET------------------");
+            console.log(`INSERT INTO Przejscie_Odcinka VALUES\n${valuesJoined};`);
+            console.log('-------------------SKRRRA------------------');
+            console.log(segmentsInRoute);
+            
+            
+            res.json({success : true, message : "Route succesfully added"})
             
         }
         catch(err){
