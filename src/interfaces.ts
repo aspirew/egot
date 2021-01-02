@@ -64,3 +64,10 @@ export interface odcinekHR {
     Punktacja : number,
     PunktacjaOdKonca : number
 }
+
+export interface badgeWays {
+    Data : Date,
+    Zdobyte : number,
+    Nadmiar : number,
+    Przyznane : number
+}

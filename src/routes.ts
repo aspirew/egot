@@ -19,6 +19,7 @@ router.get('/api/ongoingBadge', (req, res) => badgeService.getOngoingBadge(req, 
 router.get('/api/completedBadges', (req, res) => badgeService.getCompletedBadges(req, res))
 router.get('/api/badge/:type', (req, res) => badgeService.getBadge(req, res))
 router.get('/api/rank/:id', (req, res) => badgeService.getRankById(req, res))
+router.get('/api/badge/:id/ways', (req, res) => badgeService.getAllBadgeWays(req, res))
 
 router.get('/api/points', (req, res) => pointsService.getAllPoints(req, res))
 router.get('/api/point/:id/bounds', (req, res) => pointsService.getBoundPoints(req, res))
