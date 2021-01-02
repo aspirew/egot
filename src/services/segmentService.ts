@@ -73,8 +73,6 @@ class segmentService{
             console.log(xd)
             query = await pool.promise().query(xd)
 
-            console.log(req.body)
-
             if(query[0]){
                 const result : Array<odcinekHR> = JSON.parse(JSON.stringify(query[0]))
                 res.json(result)
