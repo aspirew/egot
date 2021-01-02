@@ -21,8 +21,8 @@ class segmentService{
     }
 
     async segmentSearch(req, res) {
-        const {points, name} = req.body
-        //TODO : search for segment
+        const {areaID, points, name, minPoints, maxPoints, minLen, maxLen} = req.body
+
         var pointsarray = points.split(" ")
         for (var i =0; i < pointsarray.length; i++){
             pointsarray[i] = `'${pointsarray[i]}'`
