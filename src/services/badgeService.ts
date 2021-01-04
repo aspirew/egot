@@ -5,6 +5,7 @@ class badgeService{
     async getOngoingBadge(req, res) {
         const user = req.session.login
         if(user){
+            try{
             const query = await pool.promise().query(`SELECT * FROM Odznaka JOIN Turysta ON Odznaka.Turysta = Turysta.ID 
             WHERE Turysta.Login = '${user}' AND Odznaka.Zdobyta = false`)
             if(query[0]){
@@ -15,6 +16,10 @@ class badgeService{
                 res.json(null)
             }
         }
+        catch (err){
+            res.json({message : err.sqlMessage})
+        }
+        }
         else{
             res.json(null)
         }
@@ -23,6 +28,7 @@ class badgeService{
     async getCompletedBadges(req, res) {
         const user = req.session.login
         if(user){
+            try{
             const query = await pool.promise().query(`SELECT * FROM Odznaka JOIN Turysta ON Turysta.ID = Turysta 
             WHERE Turysta.Login = '${user}' AND Odznaka.Zdobyta = true`) 
             if(query[0]){
@@ -33,6 +39,10 @@ class badgeService{
                 res.json(null)
             }
         }
+        catch (err){
+            res.json({message : err.sqlMessage})
+        }
+        }
         else{
             res.json(null)
         }
@@ -42,6 +52,7 @@ class badgeService{
         const type = req.params.type
         const user = req.session.login
         if(user){
+            try{
             const query = await pool.promise().query(`SELECT Odznaka.ID, Punkty_wymagane, Zdobyta FROM Odznaka 
             JOIN Turysta ON Turysta.ID = Odznaka.Turysta
             JOIN Stopien ON Stopien.ID = Odznaka.Stopien
@@ -53,6 +64,10 @@ class badgeService{
             else{
                 res.json(null)
             }
+            }
+            catch (err){
+                res.json({message : err.sqlMessage})
+            }
         }
         else{
             res.json(null)
@@ -61,6 +76,7 @@ class badgeService{
 
     async getRankById(req, res) {
         const id = req.params.id
+        try{
         const query = await pool.promise().query(`SELECT * FROM Stopien WHERE ID = ${id}`)
         if(query[0]){
             const result : odznaka = JSON.parse(JSON.stringify(query[0]))
@@ -68,6 +84,10 @@ class badgeService{
         }
         else{
             res.json(null)
+        }
+        }
+        catch (err){
+            res.json({message : err.sqlMessage})
         }
     }
 

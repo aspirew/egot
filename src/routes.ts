@@ -1,10 +1,10 @@
 import { Router } from 'express'
 import badgeService from './services/badgeService';
-import wayService from './services/wayService'
 import userService from './services/userService'
 import pointsService from './services/pointsService'
 import areaService from './services/areaService';
 import segmentService from './services/segmentService';
+import routesService from './services/routesService';
 
 const router = Router()
 
@@ -12,8 +12,8 @@ router.get('/', (req, res) => {
     res.send('Hello world!');
   })
 
-router.get('/api/ways', (req, res) => wayService.getAllWays(req, res))
-
+router.get('/api/routes', (req, res) => routesService.getAllRoutes(req, res))
+router.post('/api/route/save', (req, res) => routesService.saveRoute(req, res))
 
 router.get('/api/ongoingBadge', (req, res) => badgeService.getOngoingBadge(req, res))
 router.get('/api/completedBadges', (req, res) => badgeService.getCompletedBadges(req, res))

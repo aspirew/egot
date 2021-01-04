@@ -26,14 +26,14 @@ class userService{
         if(req.session.login){
             res.json({
                 isLoggedIn : true,
-                username : req.session.login,
+                name : req.session.name,
                 isEmployee : req.session.employee
             })
         }
         else {
             res.json({
                 isLoggedIn : false,
-                username : null,
+                name : null,
                 isEmployee : false
             })
         }

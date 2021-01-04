@@ -77,9 +77,11 @@ class pointsService{
     async pointEdit(req, res){
         const ID : number = req.params.id
         const point : punkt = req.body.newPointData
+        console.log(ID)
+        console.log(point)
         try {
             const query = await pool.promise().query(`UPDATE Punkt SET Nazwa = '${point.Nazwa}', Wysokosc_npm = ${point.Wysokosc_npm} WHERE ID=${ID}`)
-            res.json({success : true, message : "point succesfully eddited"})
+            res.json({success : true, message : "point succesfully edited"})
         }
         catch(err) {
             res.json({success : false, message : err.sqlMessage})
