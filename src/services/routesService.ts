@@ -20,7 +20,6 @@ class routesService{
         const segmentsInRoute : Array<simplePrzejscieOdcinka> = req.body.route
         const routeName : string = req.body.routeName
         const initialPoint : number = req.body.initialPoint
-        console.log(segmentsInRoute)
 
         try {
             const query = await pool.promise().query(`INSERT INTO Przejscie VALUE (NULL, '${routeName}', ${initialPoint},(SELECT ID FROM Odznaka WHERE Turysta = ${userID} AND Odznaka.Zdobyta = false), ${userID}, false, NULL, NULL, NULL);`)
@@ -32,12 +31,7 @@ class routesService{
             })
             var valuesJoined = values.join(',\n')
             const query2 = await pool.promise().query(`INSERT INTO Przejscie_Odcinka VALUES\n${valuesJoined};`);
-            console.log("-------------------YEET------------------");
-            console.log(`INSERT INTO Przejscie_Odcinka VALUES\n${valuesJoined};`);
-            console.log('-------------------SKRRRA------------------');
-            console.log(segmentsInRoute);
-            
-            
+                        
             res.json({success : true, message : "Route succesfully added"})
             
         }

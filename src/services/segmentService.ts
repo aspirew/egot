@@ -4,14 +4,11 @@ import { odcinek, odcinekHR } from '../interfaces'
 class segmentService{
     async addNewSegment(req, res) {
 
-        console.log(req.body)
-
         const {ID, Nazwa, PunktPoczatkowy, PunktKoncowy, Teren, Dlugosc, Punktacja, PunktacjaOdKonca} = req.body.newSegment
 
         try{
             const query = await pool.promise().query(`INSERT INTO Odcinek VALUES(NULL, '${Nazwa}', ${PunktPoczatkowy}, ${PunktKoncowy},
                 ${Teren}, ${Dlugosc}, ${Punktacja}, ${PunktacjaOdKonca})`)
-            console.log(query)
             res.json({success : true, message : "New segment succesfully add"})
         }
         catch(err) {
@@ -45,7 +42,7 @@ class segmentService{
                 whereStatements.push(`O.Nazwa LIKE('%${name}%')`)
             }
             else if (name == '' && points !=''){
-                whereStatements.push(`PP.Nazwa IN(${pointsString}) OR PK.Nazwa IN(${pointsString})`)
+                whereStatements.push(`(PP.Nazwa IN(${pointsString}) OR PK.Nazwa IN(${pointsString}))`)
             }
 
             if(areaID != null){
@@ -70,7 +67,6 @@ class segmentService{
                     ${whereStatements.length!=0?'WHERE': ''} 
                     ${whereStatements.join(' AND ')} 
                     ORDER BY O.Nazwa`
-            console.log(xd)
             query = await pool.promise().query(xd)
 
             if(query[0]){
@@ -90,8 +86,11 @@ class segmentService{
     async segmentEdit(req, res){
         const segmentID : number = req.params.id
         const newSegment : odcinek = req.body
+
+        
         console.log(segmentID)
         console.log(newSegment)
+
         try {
             const query = await pool.promise().query (`UPDATE Odcinek SET Nazwa = '${newSegment.Nazwa}', 
                     Punktacja=${newSegment.Punktacja}, 
@@ -108,7 +107,6 @@ class segmentService{
 
     async segmentDelete(req, res){
         const segmentID : number = req.params.id
-        console.log(segmentID)
         try {
             const query = await pool.promise().query(`DELETE FROM Odcinek WHERE ID = ${segmentID}`)
             res.json({success : true, message : "Segment succesfully deleted"})
