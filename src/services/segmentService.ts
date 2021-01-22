@@ -21,7 +21,7 @@ class segmentService{
         const {areaID, points, name, minPoints, maxPoints, minLen, maxLen} = req.body
         
 
-        var pointsarray = points.split(" ")
+        var pointsarray = points.split(",")
         for (var i =0; i < pointsarray.length; i++){
             pointsarray[i] = `'${pointsarray[i]}'`
         }
