@@ -27,3 +27,5 @@ app.use('/', routes)
 app.listen(port, () => {
   return console.log(`server is listening on ${port}`);
 })
+
+export default app
