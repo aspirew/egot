@@ -86,9 +86,6 @@ class segmentService{
     async segmentEdit(req, res){
         const segmentID : number = req.params.id
         const newSegment : odcinek = req.body
- 
-        console.log(segmentID)
-        console.log(newSegment)
 
         try {
             const query = await pool.promise().query (`UPDATE Odcinek SET Nazwa = '${newSegment.Nazwa}', 

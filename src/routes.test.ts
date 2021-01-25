@@ -13,11 +13,11 @@ poolObject.setTesting()
 
 const del = async (name: String) => {
   try{
-    const result = await testPool.promise().query('DELETE FROM Punkt WHERE nazwa = ?', name);
-    console.log(result)
+    const result = await pool.promise().query('DELETE FROM Punkt WHERE nazwa = ?', name);
+    //console.log(result)
   }
     catch(err){
-      console.log(err)
+
     }
 }
 
@@ -33,11 +33,29 @@ const delSeg = async (name: String) => {
 
 const add = async (id: Number, name: String, Pracownik_PTTK: Number, npm: Number) => {
     try{
-      const result = await pool.promise().query('INSERT INTO odcinek VALUES ?, ?, ?, ?', [id, name, Pracownik_PTTK, npm]);
-      console.log(result)
+      const result = await pool.promise().query('INSERT INTO Punkt VALUES ?, ?, ?, ?', [id, name, Pracownik_PTTK, npm]);
+      //console.log(result)
     }
     catch(err){
-      //console.log(err)
+    }
+}
+
+const reverseChange = async (id: Number, nazwa: String, punktacja1: Number, punktacja2: Number) => {
+  try{
+    const result = await pool.promise().query('UPDATE odcinek SET Nazwa = ?, Punktacja = ?, PunktacjaOdKonca = ? WHERE ID = ?', [nazwa, punktacja1, punktacja2, id]);
+    //console.log(result)
+  }
+  catch(err){
+
+  }
+}
+
+  const getSegmentFromDB = async (id: Number) => {
+    try{
+      const result = await pool.promise().query('SELECT Punktacja FROM Odcinek WHERE ID = ?', id);
+      return result;
+    }
+    catch(err){
     }
 }
 
@@ -105,7 +123,7 @@ describe('Post Endpoints', () => {
       const Wysokosc_npm = 586
 
       const res = await request(app)
-      .delete(`/api/segment/${id}`)
+      .delete(`/api/point/${id}`)
       
       await add(id, name, Pracownik_PTTK, Wysokosc_npm)
       
@@ -116,13 +134,12 @@ describe('Post Endpoints', () => {
       const id = 1
     
         const res = await request(app)
-          .delete(`/api/segment/${id}`)
+          .delete(`/api/point/${id}`)
           
           expect(res.body.success).toEqual(false)
     
       })
 
-      //
       it('Posting new segment should succeed', async () => {
         const name = 'Wyszeborska Trasa Dla Miłości Serca'
         const start = 47
@@ -232,5 +249,75 @@ describe('Post Endpoints', () => {
 
     })
 
-    
-})
+    it('Editing existing segment should succeed', async () => {
+      const id = 24
+      const Nazwa = "Kocurkowy odcinek"
+      const Punktacja = 6
+      const PunktacjaOdKonca = 10
+
+      const nazwaPrzed = "z Cerekwicy"
+      const punktacjaPrzed = 3
+      const punktacjaOdKoncaPrzed = 3
+
+      const res = await request(app)
+        .post(`/api/segment/${id}`)
+        .send({
+            Nazwa : Nazwa,
+            Punktacja : Punktacja,
+            PunktacjaOdKonca: PunktacjaOdKonca
+        })
+
+        console.log(res.body)
+
+        reverseChange(id, nazwaPrzed, punktacjaPrzed, punktacjaOdKoncaPrzed)
+        
+        expect(res.body.success).toEqual(true)
+  
+    })
+
+    it('Editing segments to negative should save them as 0', async () => {
+      const id = 24
+      const Nazwa = "Kocurkowy odcinek"
+      const Punktacja = -6
+      const PunktacjaOdKonca = 66
+
+      const nazwaPrzed = "z Cerekwicy"
+      const punktacjaPrzed = 3
+      const punktacjaOdKoncaPrzed = 3
+
+      const res = await request(app)
+        .post(`/api/segment/${id}`)
+        .send({
+            Nazwa : Nazwa,
+            Punktacja : Punktacja,
+            PunktacjaOdKonca: PunktacjaOdKonca
+        })
+
+        const modifiedData = (await getSegmentFromDB(id))
+        const md = JSON.parse(JSON.stringify(modifiedData[0]))[0].Punktacja
+
+        reverseChange(id, nazwaPrzed, punktacjaPrzed, punktacjaOdKoncaPrzed)
+
+        expect(md).toEqual(0)
+        expect(res.body.success).toEqual(true)
+  
+    })
+
+    it('Editing segment with duplicated name should fail', async () => {
+      const id = 24
+      const Nazwa = "z Glinna"
+      const Punktacja = -6
+      const PunktacjaOdKonca = 66
+
+      const res = await request(app)
+        .post(`/api/segment/${id}`)
+        .send({
+            Nazwa : Nazwa,
+            Punktacja : Punktacja,
+            PunktacjaOdKonca: PunktacjaOdKonca
+        })
+
+        expect(res.body.success).toEqual(false)
+  
+    })
+} )
