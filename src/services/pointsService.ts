@@ -62,7 +62,7 @@ class pointsService{
     async addNewPoint(req, res){
         const name : string = req.body.name
         const npm : number = req.body.npm
-        const employeeID : number = req.session.userID
+        const employeeID : number = 1
 
         try {
             const query = await pool.promise().query(`INSERT INTO Punkt VALUES(NULL, '${name}', ${employeeID}, ${npm})`)
