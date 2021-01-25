@@ -30,3 +30,5 @@ class dbConn {
 export const poolObject = new dbConn()
 
 export var pool = poolObject.pool
+
+export var testPool = poolObject.testPool
