@@ -13,7 +13,7 @@ poolObject.setTesting()
 
 const del = async (name: String) => {
   try{
-    const result = await pool.promise().query('DELETE FROM Punkt WHERE nazwa = ?', name);
+    const result = await testPool.promise().query('DELETE FROM Punkt WHERE nazwa = ?', name);
     //console.log(result)
   }
     catch(err){
@@ -23,7 +23,7 @@ const del = async (name: String) => {
 
 const delSeg = async (name: String) => {
   try{
-    const result = await pool.promise().query('DELETE FROM Odcinek WHERE nazwa = ?', name);
+    const result = await testPool.promise().query('DELETE FROM Odcinek WHERE nazwa = ?', name);
     console.log(result)
   }
     catch(err){
@@ -33,7 +33,7 @@ const delSeg = async (name: String) => {
 
 const add = async (id: Number, name: String, Pracownik_PTTK: Number, npm: Number) => {
     try{
-      const result = await pool.promise().query('INSERT INTO Punkt VALUES ?, ?, ?, ?', [id, name, Pracownik_PTTK, npm]);
+      const result = await testPool.promise().query('INSERT INTO Punkt VALUES ?, ?, ?, ?', [id, name, Pracownik_PTTK, npm]);
       //console.log(result)
     }
     catch(err){
@@ -42,7 +42,7 @@ const add = async (id: Number, name: String, Pracownik_PTTK: Number, npm: Number
 
 const reverseChange = async (id: Number, nazwa: String, punktacja1: Number, punktacja2: Number) => {
   try{
-    const result = await pool.promise().query('UPDATE odcinek SET Nazwa = ?, Punktacja = ?, PunktacjaOdKonca = ? WHERE ID = ?', [nazwa, punktacja1, punktacja2, id]);
+    const result = await testPool.promise().query('UPDATE Odcinek SET Nazwa = ?, Punktacja = ?, PunktacjaOdKonca = ? WHERE ID = ?', [nazwa, punktacja1, punktacja2, id]);
     //console.log(result)
   }
   catch(err){
@@ -52,7 +52,7 @@ const reverseChange = async (id: Number, nazwa: String, punktacja1: Number, punk
 
   const getSegmentFromDB = async (id: Number) => {
     try{
-      const result = await pool.promise().query('SELECT Punktacja FROM Odcinek WHERE ID = ?', id);
+      const result = await testPool.promise().query('SELECT Punktacja FROM Odcinek WHERE ID = ?', id);
       return result;
     }
     catch(err){
@@ -61,7 +61,7 @@ const reverseChange = async (id: Number, nazwa: String, punktacja1: Number, punk
 
 const addSeg = async (id: Number, name: String, pp : Number, pk: Number, ter: Number, dl: Number, punkt : Number, punkt2: Number) => {
   try{
-    const result = await pool.promise().query('INSERT INTO Odcinek VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [id, name, pp, pk, ter, dl, punkt, punkt2]);
+    const result = await testPool.promise().query('INSERT INTO Odcinek VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [id, name, pp, pk, ter, dl, punkt, punkt2]);
     console.log(result)
   }
   catch(err){
@@ -142,8 +142,8 @@ describe('Post Endpoints', () => {
 
       it('Posting new segment should succeed', async () => {
         const name = 'Wyszeborska Trasa Dla Miłości Serca'
-        const start = 47
-        const end = 46
+        const start = 40
+        const end = 41
         const dlugosc = 100
         const teren = 3
         const punktacja = 10
@@ -164,7 +164,6 @@ describe('Post Endpoints', () => {
         })
 
         await delSeg(name)
-
         expect(res.body.success).toEqual(true)
         expect(res.body.message).toEqual("New segment succesfully add")
       })
@@ -191,6 +190,8 @@ describe('Post Endpoints', () => {
             PunktacjaOdKonca: punktacja2
           }
         })
+        console.log('BBBBBBBBB')
+        console.log(res.body)
 
         expect(res.body.success).toEqual(false)
       })
@@ -275,7 +276,7 @@ describe('Post Endpoints', () => {
   
     })
 
-    it('Editing segments to negative should save them as 0', async () => {
+    it('Editing segments to negative should fail', async () => {
       const id = 24
       const Nazwa = "Kocurkowy odcinek"
       const Punktacja = -6
@@ -293,13 +294,8 @@ describe('Post Endpoints', () => {
             PunktacjaOdKonca: PunktacjaOdKonca
         })
 
-        const modifiedData = (await getSegmentFromDB(id))
-        const md = JSON.parse(JSON.stringify(modifiedData[0]))[0].Punktacja
-
-        reverseChange(id, nazwaPrzed, punktacjaPrzed, punktacjaOdKoncaPrzed)
-
-        expect(md).toEqual(0)
-        expect(res.body.success).toEqual(true)
+        expect(res.body.success).toEqual(false)
+        expect(res.body.message).toEqual("Out of range value for column 'Punktacja' at row 1")
   
     })
 
