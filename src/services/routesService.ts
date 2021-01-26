@@ -22,8 +22,8 @@ class routesService{
         const initialPoint : number = req.body.initialPoint
 
         try {
-            const query = await pool.promise().query(`INSERT INTO Przejscie VALUE (NULL, '${routeName}', ${initialPoint},(SELECT ID FROM Odznaka WHERE Turysta = ${userID} AND Odznaka.Zdobyta = false), ${userID}, false, NULL, NULL, NULL);`)
-            const idQuery = await pool.promise().query(`SELECT ID FROM Przejscie WHERE TurystaPlanujacy = ${userID} AND Nazwa = '${routeName}';`)
+            const query = await pool.promise().query(`INSERT INTO Przejscie VALUE (NULL, ?, ?,(SELECT ID FROM Odznaka WHERE Turysta = ? AND Odznaka.Zdobyta = false), ?, false, NULL, NULL, NULL);` , [routeName, initialPoint, userID, userID])
+            const idQuery = await pool.promise().query(`SELECT ID FROM Przejscie WHERE TurystaPlanujacy = ? AND Nazwa = ?;`, [userID, routeName])
             const routeId : number = JSON.parse(JSON.stringify(query[0])).insertId
             var values = []
             segmentsInRoute.forEach(e => {

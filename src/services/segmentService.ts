@@ -7,8 +7,9 @@ class segmentService{
         const {ID, Nazwa, PunktPoczatkowy, PunktKoncowy, Teren, Dlugosc, Punktacja, PunktacjaOdKonca} = req.body.newSegment
 
         try{
-            const query = await pool.promise().query(`INSERT INTO Odcinek VALUES(NULL, '${Nazwa}', ${PunktPoczatkowy}, ${PunktKoncowy},
-                ${Teren}, ${Dlugosc}, ${Punktacja}, ${PunktacjaOdKonca})`)
+            const query = await pool.promise().query(`INSERT INTO Odcinek VALUES(NULL, ?, ?, ?,
+                ?, ?, ?, ?)`, [Nazwa, PunktPoczatkowy, PunktKoncowy,
+                Teren, Dlugosc, Punktacja, PunktacjaOdKonca])
             res.json({success : true, message : "New segment succesfully add"})
         }
         catch(err) {
@@ -92,10 +93,10 @@ class segmentService{
         console.log(newSegment)
 
         try {
-            const query = await pool.promise().query (`UPDATE Odcinek SET Nazwa = '${newSegment.Nazwa}', 
-                    Punktacja=${newSegment.Punktacja}, 
-                    PunktacjaOdKonca=${newSegment.PunktacjaOdKonca===0?"NULL":newSegment.PunktacjaOdKonca} 
-                    WHERE ID=${segmentID};`)
+            const query = await pool.promise().query (`UPDATE Odcinek SET Nazwa = ?, 
+                    Punktacja= ?, 
+                    PunktacjaOdKonca= ? 
+                    WHERE ID= ?;`, [newSegment.Nazwa, newSegment.Punktacja, newSegment.PunktacjaOdKonca===0?null:newSegment.PunktacjaOdKonca, segmentID])
             res.json({success : true, message : "Segment succesfully eddited"})
             
         }
@@ -108,7 +109,7 @@ class segmentService{
     async segmentDelete(req, res){
         const segmentID : number = req.params.id
         try {
-            const query = await pool.promise().query(`DELETE FROM Odcinek WHERE ID = ${segmentID}`)
+            const query = await pool.promise().query(`DELETE FROM Odcinek WHERE ID = ?`, [segmentID] )
             res.json({success : true, message : "Segment succesfully deleted"})
         }
         catch(err){

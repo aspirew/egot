@@ -7,7 +7,7 @@ class badgeService{
         if(user){
             try{
             const query = await pool.promise().query(`SELECT * FROM Odznaka JOIN Turysta ON Odznaka.Turysta = Turysta.ID 
-            WHERE Turysta.Login = '${user}' AND Odznaka.Zdobyta = false`)
+            WHERE Turysta.Login = ? AND Odznaka.Zdobyta = false`, [user])
             if(query[0]){
                 const result : odznaka = JSON.parse(JSON.stringify(query[0]))
                 res.json(result)
@@ -30,7 +30,7 @@ class badgeService{
         if(user){
             try{
             const query = await pool.promise().query(`SELECT * FROM Odznaka JOIN Turysta ON Turysta.ID = Turysta 
-            WHERE Turysta.Login = '${user}' AND Odznaka.Zdobyta = true`) 
+            WHERE Turysta.Login = ? AND Odznaka.Zdobyta = true`, [user]) 
             if(query[0]){
                 const result : Array<odznaka> = JSON.parse(JSON.stringify(query[0]))
                 res.json(result)
@@ -56,7 +56,7 @@ class badgeService{
             const query = await pool.promise().query(`SELECT Odznaka.ID, Punkty_wymagane, Zdobyta FROM Odznaka 
             JOIN Turysta ON Turysta.ID = Odznaka.Turysta
             JOIN Stopien ON Stopien.ID = Odznaka.Stopien
-            WHERE Turysta.Login = '${user}' AND Stopien.Nazwa = '${type}'`) 
+            WHERE Turysta.Login = ? AND Stopien.Nazwa = ?`, [user, type]) 
             if(query[0]){
                 const result : odznaka = JSON.parse(JSON.stringify(query[0]))
                 res.json(result)
@@ -77,7 +77,7 @@ class badgeService{
     async getRankById(req, res) {
         const id = req.params.id
         try{
-        const query = await pool.promise().query(`SELECT * FROM Stopien WHERE ID = ${id}`)
+        const query = await pool.promise().query(`SELECT * FROM Stopien WHERE ID = ?`, [id])
         if(query[0]){
             const result : odznaka = JSON.parse(JSON.stringify(query[0]))
             res.json(result)
@@ -108,10 +108,10 @@ class badgeService{
                     JOIN Przejscie_Odcinka ON Przejscie_Odcinka.Przejscie=Przejscie.ID
                     JOIN Odcinek ON Odcinek.ID=Przejscie_Odcinka.Odcinek
                 WHERE Przejscie_Odcinka.Zatwierdzone=true
-                    AND Odznaka.ID= ${id}
+                    AND Odznaka.ID= ?
                 GROUP BY Przejscie_Odcinka.Odcinek, Przejscie_Odcinka.Od_konca
             ) YEET
-        GROUP BY YEET.data_przejscia ORDER BY YEET.data_przejscia;`)
+        GROUP BY YEET.data_przejscia ORDER BY YEET.data_przejscia;`, [id])
 
             if(query[0]){
                 const result : badgeWays = JSON.parse(JSON.stringify(query[0]))

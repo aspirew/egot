@@ -21,7 +21,7 @@ class pointsService{
 
         try{
             const query = await pool.promise().query(`SELECT DISTINCT Punkt.ID, Punkt.Nazwa, Punkt.Pracownik_PTTK, Punkt.Wysokosc_npm
-            FROM Odcinek JOIN Punkt ON Punkt.ID IN (Odcinek.PunktPoczatkowy, Odcinek.PunktKoncowy) WHERE Odcinek.Teren = ${pointID} `)
+            FROM Odcinek JOIN Punkt ON Punkt.ID IN (Odcinek.PunktPoczatkowy, Odcinek.PunktKoncowy) WHERE Odcinek.Teren = ? `, [pointID])
             const result : Array<punkt> = JSON.parse(JSON.stringify(query[0]))
             res.json(result)
         }
@@ -37,7 +37,7 @@ class pointsService{
 
         try{
             const query = await pool.promise().query(`SELECT Punkt.Nazwa FROM Odcinek 
-            JOIN punkt ON Punkt.ID = odcinek.PunktKoncowy WHERE PunktPoczatkowy = ${pointID}`)
+            JOIN punkt ON Punkt.ID = odcinek.PunktKoncowy WHERE PunktPoczatkowy = ? `, [pointID])
             const result : Array<punkt> = JSON.parse(JSON.stringify(query[0]))
             res.json(result)
         }
@@ -65,7 +65,7 @@ class pointsService{
         const employeeID : number = req.session.userID
 
         try {
-            const query = await pool.promise().query(`INSERT INTO Punkt VALUES(NULL, '${name}', ${employeeID}, ${npm})`)
+            const query = await pool.promise().query(`INSERT INTO Punkt VALUES(NULL, ?, ?, ?)`, [name, employeeID, npm])
             res.json({success : true, message : "New point succesfully add"})
         }
         catch(err) {
@@ -80,7 +80,7 @@ class pointsService{
         console.log(ID)
         console.log(point)
         try {
-            const query = await pool.promise().query(`UPDATE Punkt SET Nazwa = '${point.Nazwa}', Wysokosc_npm = ${point.Wysokosc_npm} WHERE ID=${ID}`)
+            const query = await pool.promise().query(`UPDATE Punkt SET Nazwa = ?, Wysokosc_npm = ? WHERE ID= ?`, [point.Nazwa, point.Wysokosc_npm, ID])
             res.json({success : true, message : "point succesfully edited"})
         }
         catch(err) {
@@ -91,7 +91,7 @@ class pointsService{
     async pointDelete(req, res){
         const ID : number = req.params.id
         try {
-            const query = await pool.promise().query(`DELETE FROM Punkt WHERE ID=${ID}`)
+            const query = await pool.promise().query(`DELETE FROM Punkt WHERE ID= ?`, [ID])
             res.json({success : true, message : "point succesfully deleted"})
         }
         catch(err) {
